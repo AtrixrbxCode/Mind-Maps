@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Tool</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #e9ecef;
+        }
+
+        .node {
+            position: absolute;
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            user-select: none;
+            touch-action: none; /* Prevent browser scrolling during touch drag */
+        }
+
+        .node.editing {
+            cursor: text;
+            user-select: text;
+        }
+
+        #controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="createNode()">Add Node</button>
+    </div>
+    <div id="canvas"></div>
+
+    <script>
+        let canvas = document.getElementById('canvas');
+
+        function createNode() {
+            let node = document.createElement('div');
+            node.className = 'node';
+            node.contentEditable = false; // Disable typing initially
+            node.textContent = 'New Node';
+
+            // Set initial position
+            node.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            node.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+
+            // Drag and drop functionality
+            addDragAndTouchEvents(node);
+
+            // Edit functionality
+            node.addEventListener('dblclick', () => {
+                node.contentEditable = true;
+                node.classList.add('editing');
+                node.focus();
+            });
+
+            // Lock editing when focus is lost
+            node.addEventListener('blur', () => {
+                node.contentEditable = false;
+                node.classList.remove('editing');
+            });
+
+            canvas.appendChild(node);
+        }
+
+        function addDragAndTouchEvents(node) {
+            let offsetX = 0, offsetY = 0;
+
+            // Mouse drag
+            node.addEventListener('mousedown', (e) => {
+                if (node.classList.contains('editing')) return; // Don't drag if editing
+                offsetX = e.clientX - parseInt(node.style.left);
+                offsetY = e.clientY - parseInt(node.style.top);
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+            });
+
+            // Touch drag
+            node.addEventListener('touchstart', (e) => {
+                if (node.classList.contains('editing')) return; // Don't drag if editing
+                let touch = e.touches[0];
+                offsetX = touch.clientX - parseInt(node.style.left);
+                offsetY = touch.clientY - parseInt(node.style.top);
+                document.addEventListener('touchmove', drag);
+                document.addEventListener('touchend', stopDrag);
+            });
+
+            function drag(e) {
+                let x = 0, y = 0;
+                if (e.type === 'mousemove') {
+                    x = e.clientX;
+                    y = e.clientY;
+                } else if (e.type === 'touchmove') {
+                    let touch = e.touches[0];
+                    x = touch.clientX;
+                    y = touch.clientY;
+                }
+                node.style.left = x - offsetX + 'px';
+                node.style.top = y - offsetY + 'px';
+            }
+
+            function stopDrag() {
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', drag);
+                document.removeEventListener('touchend', stopDrag);
+            }
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Tool</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #e9ecef;
+        }
+
+        .node {
+            position: absolute;
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            user-select: none;
+            touch-action: none; /* Prevent browser scrolling during touch drag */
+        }
+
+        .node.editing {
+            cursor: text;
+            user-select: text;
+        }
+
+        #controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="createNode()">Add Node</button>
+    </div>
+    <div id="canvas"></div>
+
+    <script>
+        let canvas = document.getElementById('canvas');
+
+        function createNode() {
+            let node = document.createElement('div');
+            node.className = 'node';
+            node.contentEditable = false; // Disable typing initially
+            node.textContent = 'New Node';
+
+            // Set initial position
+            node.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            node.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+
+            // Drag and drop functionality
+            addDragAndTouchEvents(node);
+
+            // Edit functionality
+            node.addEventListener('dblclick', () => {
+                node.contentEditable = true;
+                node.classList.add('editing');
+                node.focus();
+            });
+
+            // Lock editing when focus is lost
+            node.addEventListener('blur', () => {
+                node.contentEditable = false;
+                node.classList.remove('editing');
+            });
+
+            canvas.appendChild(node);
+        }
+
+        function addDragAndTouchEvents(node) {
+            let offsetX = 0, offsetY = 0;
+
+            // Mouse drag
+            node.addEventListener('mousedown', (e) => {
+                if (node.classList.contains('editing')) return; // Don't drag if editing
+                offsetX = e.clientX - parseInt(node.style.left);
+                offsetY = e.clientY - parseInt(node.style.top);
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+            });
+
+            // Touch drag
+            node.addEventListener('touchstart', (e) => {
+                if (node.classList.contains('editing')) return; // Don't drag if editing
+                let touch = e.touches[0];
+                offsetX = touch.clientX - parseInt(node.style.left);
+                offsetY = touch.clientY - parseInt(node.style.top);
+                document.addEventListener('touchmove', drag);
+                document.addEventListener('touchend', stopDrag);
+            });
+
+            function drag(e) {
+                let x = 0, y = 0;
+                if (e.type === 'mousemove') {
+                    x = e.clientX;
+                    y = e.clientY;
+                } else if (e.type === 'touchmove') {
+                    let touch = e.touches[0];
+                    x = touch.clientX;
+                    y = touch.clientY;
+                }
+                node.style.left = x - offsetX + 'px';
+                node.style.top = y - offsetY + 'px';
+            }
+
+            function stopDrag() {
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', drag);
+                document.removeEventListener('touchend', stopDrag);
+            }
+        }
+    </script>
+</body>
+</html>
